@@ -98,7 +98,19 @@ class Renderer {
     drawSlide1(framebuffer) {
         // TODO: draw at least 2 circles
         //   - variable `this.num_curve_sections` should be used for `num_edges`
+        let num_edges = this.num_curve_sections;
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
+        // draw vertices is gonna be located in drawCircle as it needs t odraw at each edge,
+        // instead of like the origin only.
+        let center = {x: 200, y: 200};
+        let radius = 50;
+
+        this.drawCircle(center, radius, num_edges, this.orange, framebuffer);
+
+        center = {x: 300, y: 300};
+        radius = 25;
+        this.drawCircle(center, radius, num_edges, this.green, framebuffer);
+
         
         
     }
@@ -159,6 +171,27 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawCircle(center, radius, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a circle
+        let step = 1;
+        let previous = {x: center.x + radius, y: center.y}; 
+
+
+        while (step <= num_edges) {
+            let phi = (step / num_edges) * 2 * Math.PI;
+
+            let currentPoint = { x: Math.round(center.x + (radius * Math.cos(phi))),
+                                 y: Math.round(center.y + (radius * Math.sin(phi)))};
+
+            this.drawLine(previous, currentPoint, color,framebuffer);
+
+            if (this.show_points) {
+                this.drawVertex(currentPoint, color, framebuffer);
+            }            
+
+            previous = {x: currentPoint.x, y: currentPoint.y};
+            step++;
+        }
+
+        
         
         
     }
@@ -180,20 +213,20 @@ class Renderer {
         let size = 5;
 
 
-    this.drawLine(
-        {x: v.x - size, y: v.y - size},
-        {x: v.x + size, y: v.y + size},
-        color,
-        framebuffer
-    );
+        this.drawLine(
+            {x: v.x - size, y: v.y - size},
+            {x: v.x + size, y: v.y + size},
+            color,
+            framebuffer
+        );
 
-    this.drawLine(
-        {x: v.x - size, y: v.y + size},
-        {x: v.x + size, y: v.y - size},
-        color,
-        framebuffer
-    );
-        
+        this.drawLine(
+            {x: v.x - size, y: v.y + size},
+            {x: v.x + size, y: v.y - size},
+            color,
+            framebuffer
+        );
+            
         
     }
     
