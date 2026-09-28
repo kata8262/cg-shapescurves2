@@ -9,6 +9,13 @@ class Renderer {
         this.slide_idx = 0;
         this.num_curve_sections = num_curve_sections;
         this.show_points = show_points_flag;
+
+        this.red    = [255, 0, 0, 255];
+        this.orange = [255, 165, 0, 255];
+        this.yellow = [255, 255, 0, 255];
+        this.green  = [0, 255, 0, 255];
+        this.blue   = [0, 0, 255, 255];
+        this.purple = [128, 0, 128, 255];
     }
 
     // n:  int
@@ -49,14 +56,42 @@ class Renderer {
 
     // framebuffer:  canvas ctx image data
     drawSlide0(framebuffer) {
+        
         // TODO: draw at least 2 Bezier curves
         //   - variable `this.num_curve_sections` should be used for `num_edges`
+        let num_edges = this.num_curve_sections;
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
+      
+        let p0 = {x: 100, y: 100};
+        let p1 = {x: 300, y: 300};
+        let p2 = {x: 600, y: 300};
+        let p3 = {x: 400, y: 150};
+        this.drawBezierCurve(p0, p1, p2, p3, num_edges, [255,0,0,255], framebuffer);
+
+        if (this.show_points) {
+        this.drawVertex(p0, [255,0,0,255], framebuffer);
+        this.drawVertex(p1, [255,0,0,255], framebuffer);
+        this.drawVertex(p2, [255,0,0,255], framebuffer);
+        this.drawVertex(p3, [255,0,0,255], framebuffer);            
+        }
+
+
+        p0 = {x: 150, y: 400};
+        p1 = {x: 250, y: 150};
+        p2 = {x: 500, y: 500};
+        p3 = {x: 650, y: 250};
         
+        this.drawBezierCurve(p0, p1, p2, p3, num_edges, this.blue, framebuffer);
+        
+        if (this.show_points) {
+        this.drawVertex(p0, this.blue, framebuffer);
+        this.drawVertex(p1, this.blue, framebuffer);
+        this.drawVertex(p2, this.blue, framebuffer);
+        this.drawVertex(p3, this.blue, framebuffer);            
+        }        
         
         // Following line is example of drawing a single line
         // (this should be removed after you implement the curve)
-        this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 0, 0, 255], framebuffer);
     }
 
     // framebuffer:  canvas ctx image data
@@ -100,7 +135,20 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
-        
+        let step = 1; 
+        let t = step / num_edges; 
+        let previous = {x: p0.x, y: p0.y};
+
+        while (step <= num_edges) {
+            t = step / num_edges;
+
+            let currentPoint = {x:Math.round(((1-t)**3) * p0.x + 3 * ((1-t)**2) * t * p1.x + 3 * (1-t) * (t**2) * p2.x + (t**3) * p3.x),
+                                y:Math.round(((1-t)**3) * p0.y + 3 * ((1-t)**2) * t * p1.y + 3 * (1-t) * (t**2) * p2.y + (t**3) * p3.y )};
+
+            this.drawLine(previous,currentPoint,color,framebuffer);
+            previous = {x: currentPoint.x, y: currentPoint.y};
+            step++;
+        }
         
     }
 
@@ -129,6 +177,22 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawVertex(v, color, framebuffer) {
         // TODO: draw some symbol (e.g. small rectangle, two lines forming an X, ...) centered at position `v`
+        let size = 5;
+
+
+    this.drawLine(
+        {x: v.x - size, y: v.y - size},
+        {x: v.x + size, y: v.y + size},
+        color,
+        framebuffer
+    );
+
+    this.drawLine(
+        {x: v.x - size, y: v.y + size},
+        {x: v.x + size, y: v.y - size},
+        color,
+        framebuffer
+    );
         
         
     }
