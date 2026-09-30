@@ -123,19 +123,128 @@ class Renderer {
         
         // Following lines are example of drawing a single triangle
         // (this should be removed after you implement the polygon)
-        let point_a = {x:  80, y:  40};
-        let point_b = {x: 320, y: 160};
-        let point_c = {x: 240, y: 360};
-        this.drawTriangle(point_a, point_c, point_b, [0, 128, 128, 255], framebuffer);
+
+    let pentagon = [
+        {x: 150, y: 50},
+        {x: 250, y: 120},
+        {x: 210, y: 240},
+        {x: 90,  y: 240},
+        {x: 50,  y: 120}
+    ];
+
+    let hexagon = [
+        {x: 400, y: 80},
+        {x: 500, y: 80},
+        {x: 550, y: 160},
+        {x: 500, y: 240},
+        {x: 400, y: 240},
+        {x: 350, y: 160}
+    ];
+
+    this.drawConvexPolygon(pentagon, this.purple, framebuffer);
+
+        if (this.show_points) {
+        for (let i = 0; i < pentagon.length; i++) {
+            this.drawVertex(pentagon[i], this.red, framebuffer);
+        }
+    }
+
+    this.drawConvexPolygon(hexagon, this.yellow, framebuffer);
+        if (this.show_points) {
+        for (let i = 0; i < hexagon.length; i++) {
+            this.drawVertex(hexagon[i], this.blue, framebuffer);
+        }
+    }    
     }
 
     // framebuffer:  canvas ctx image data
     drawSlide3(framebuffer) {
         // TODO: draw your name!
         //   - variable `this.num_curve_sections` should be used for `num_edges`
+        let num_edges = this.num_curve_sections;
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
+
+        // S
+        this.drawBezierCurve(
+            {x: 120, y: 300},
+            {x: 20,  y: 360},
+            {x: 20,  y: 220},
+            {x: 100, y: 220},
+            num_edges,
+            this.red,
+            framebuffer
+        );
+
+        this.drawBezierCurve(
+            {x: 100, y: 220},
+            {x: 190, y: 220},
+            {x: 180, y: 100},
+            {x: 80,  y: 140},
+            num_edges,
+            this.red,
+            framebuffer
+        );
+
         
-        
+
+
+        // T
+        this.drawLine(
+            {x: 180, y: 300},
+            {x: 300, y: 300},
+            this.orange,
+            framebuffer
+        );
+
+        this.drawLine(
+            {x: 240, y: 300},
+            {x: 240, y: 140},
+            this.orange,
+            framebuffer
+        );
+
+        // A
+        let a_shape = [
+            {x: 320, y: 140},
+            {x: 370, y: 300},
+            {x: 420, y: 140},
+            {x: 395, y: 140},
+            {x: 370, y: 225},
+            {x: 345, y: 140}
+        ];
+
+        this.drawConvexPolygon(a_shape, this.green, framebuffer);
+
+        // N
+        this.drawLine(
+            {x: 470, y: 140},
+            {x: 470, y: 300},
+            this.blue,
+            framebuffer
+        );
+
+        this.drawLine(
+            {x: 470, y: 300},
+            {x: 570, y: 140},
+            this.blue,
+            framebuffer
+        );
+
+        this.drawLine(
+            {x: 570, y: 140},
+            {x: 570, y: 300},
+            this.blue,
+            framebuffer
+        );
+
+        // Circle
+        this.drawCircle(
+            {x: 640, y: 220},
+            35,
+            num_edges,
+            this.purple,
+            framebuffer
+        );    
     }
 
     // p0:           object {x: __, y: __}
@@ -202,6 +311,9 @@ class Renderer {
     drawConvexPolygon(vertex_list, color, framebuffer) {
         // TODO: draw a sequence of triangles to form a convex polygon
         
+        for (let i = 1; i < vertex_list.length - 1; i++) {
+            this.drawTriangle(vertex_list[0], vertex_list[i], vertex_list[i+1], color, framebuffer);  
+        }
         
     }
     
